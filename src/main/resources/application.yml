@@ -2,6 +2,8 @@ server:
   port: 8081
 
 spring:
+  reactor:
+    context-propagation: auto
   cloud:
     gateway:
       routes:
@@ -36,6 +38,15 @@ springdoc:
         name: Product Service
       - url: /notification-service/v3/api-docs
         name: Notification Service
+
+management:
+  observations:
+    annotations:
+      enabled: true
+  tracing:
+    enabled: true
+    propagation:
+      type: b3_multi
 
 logging:
   level:
