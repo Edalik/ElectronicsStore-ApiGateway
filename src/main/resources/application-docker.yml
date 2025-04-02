@@ -1,0 +1,61 @@
+server:
+  port: 8080
+
+spring:
+  reactor:
+    context-propagation: auto
+  cloud:
+    gateway:
+      routes:
+        - id: user_service
+          uri: http://user-service:8080
+          predicates:
+            - Path=/api/*/users/**, /user-service/v3/api-docs
+
+        - id: product_service
+          uri: http://product-service:8080
+          predicates:
+            - Path=/api/*/products/**, /product-service/v3/api-docs
+
+        - id: notification_service
+          uri: http://notification-service:8080
+          predicates:
+            - Path=/api/*/notifications/**, /notification-service/v3/api-docs
+
+  application:
+    name: api-gateway
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger
+    config-url: /v3/api-docs/swagger-config
+    urls:
+      - url: /v3/api-docs
+        name: API Gateway Service
+      - url: /user-service/v3/api-docs
+        name: User Service
+      - url: /product-service/v3/api-docs
+        name: Product Service
+      - url: /notification-service/v3/api-docs
+        name: Notification Service
+
+management:
+  observations:
+    annotations:
+      enabled: true
+  tracing:
+    enabled: true
+    propagation:
+      type: b3_multi
+
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          gateway:
+            handler:
+              RoutePredicateHandlerMapping: TRACE
